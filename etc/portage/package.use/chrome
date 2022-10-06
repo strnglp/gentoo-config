@@ -1,0 +1,3 @@
+# enable widevine
+www-client/ungoogled-chromium widevine optimize-webui system-openjpeg system-libvpx system-ffmpeg system-png system-icu system-harfbuzz system-av1 gtk4 proprietary-codecs
+www-plugins/chrome-binary-plugins widevine

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+DATE=$(date)
+# check that the drive is mounted
+if mount | grep /media/Backup > /dev/null; then
+    rsync -avX --stats --delete \
+    --exclude="/dev/" \
+    --exclude="/run/" \
+    --exclude="/proc/" \
+    --exclude="/tmp/" \
+    --exclude="/var/" \
+    --exclude="/mnt/" \
+    --exclude="/media/" \
+    --exclude="/home/jv/Sync/" \
+    / \
+    /media/Backup/Sync/gentoo-backup
+    
+    # capture just the size of the backup
+    SIZE=`du -h -s /media/Backup/Sync/gentoo-backup | sed 's/\t.*//'`
+    # overwrite the last system backup log
+    echo "Last system backup (${SIZE}): ${DATE}" > /var/log/last_backup
+else
+    # retain the last system backup log but notify of failure
+    cat  /var/log/last_backup     > /var/log/last_backup
+    echo "BACKUP FAILED ${DATE}" >> /var/log/last_backup
+fi
+
+# update the MOTD
+cat /var/log/last_backup    > /etc/motd
+cat /var/log/last_snapshot >> /etc/motd

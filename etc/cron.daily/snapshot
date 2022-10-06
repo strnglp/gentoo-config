@@ -1,0 +1,25 @@
+#!/bin/sh
+
+DATE=$(date)
+DOW=$(date +"%a")
+
+if [ ! -e /mnt/snapshots ]; then
+  mkdir -p /mnt/snapshots
+fi
+
+cd /
+# clean up last week's snapshot
+btrfs subvolume delete "/mnt/snapshots/${DOW}"
+
+# create today's snapshot (read only)
+/sbin/btrfs subvolume snapshot -r / "/mnt/snapshots/${DOW}"
+
+# capture just the size of the snapshot
+SIZE=`du -h -s /mnt/snapshots/${DOW} | sed 's/\t.*//'`
+
+# overwrite the last system snapshot log
+echo "Last system snapshot(${SIZE}): ${DATE}" > /var/log/last_snapshot
+
+# update the MOTD
+cat /var/log/last_backup    > /etc/motd
+cat /var/log/last_snapshot >> /etc/motd
