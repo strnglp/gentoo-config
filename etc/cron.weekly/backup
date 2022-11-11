@@ -4,6 +4,7 @@ DATE=$(date)
 # check that the drive is mounted
 if mount | grep /media/Backup > /dev/null; then
     rsync -avX --stats --delete \
+    --exclude="/sys/" \
     --exclude="/dev/" \
     --exclude="/run/" \
     --exclude="/proc/" \

@@ -1,0 +1,2 @@
+media-video/pipewire echo-cancel pipewire-alsa sound-server v4l
+media-sound/pulseaudio -daemon
